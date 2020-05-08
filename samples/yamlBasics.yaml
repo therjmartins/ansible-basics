@@ -1,0 +1,47 @@
+# The # sign is used to denote comments in YAML files (more on this later)
+# The 3 dashes below denote the start of a YAML document 
+---
+
+# The basic unit in a YAML document is called a key-value pair or mapping. 
+# This uses a basic "key-colon-space-value" syntax. i.e. key: value
+
+firstName: John
+lastName: Doe
+
+# The space in that syntax is critical without the space it does not parse correctly
+# If you remove the space between key2: and value2 below and have a YAML linter in 
+# your editor it should cause a linting error.
+key2: value2
+
+# The value of the key can be of many different types, common types are:
+# "Quoted String", Unquoted String, Integer, Floating point number and boolean
+
+string1: "This is a quoted string"
+string2: This is an unquoted string
+int: 42
+float: 42.2222
+bool: true
+
+# These mappings can also be structured in what is called a hash/dictionary
+# In the example below you are also being exposed for the first time to the concept of indentation in YAML. 
+# The indentation denotes the relationship between elements of the document. 
+# In this case the three elements firstName, lastName and age belong to dict1
+# YAML is whitespace delimited, so it's very important that you aren't using Tab characters in your indentation
+
+dict1:
+  firstName: John
+  lastName: Doe
+  age: 42
+
+# The next concept to understand is the YAML array. 
+# Each new element in the array, or list item, is prefixed by a dash and a space
+
+list:
+  - item1
+  - item2
+  - item3
+
+
+
+
+

@@ -1,0 +1,52 @@
+- name: Play that has some error handling capabilities
+  hosts: 
+    - localhost
+  gather_facts: false
+  tasks:
+    - name: Task that is going to throw an error
+      fail:
+
+# We start out looking at the block for it's ability to group sets of tasks. This grouping
+# we typically use to group related tasks. Since we can use a conditional that is applied
+# to the entire block that saves us having to declare conditionals on all the tasks
+# individually as well as saving Ansible have to evaluate each individual conditional.
+
+    - block:
+      - name: Print a message
+        debug: 
+          msg: "First message printed from the block"
+          verbosity: 2
+
+      - name: Print another message
+        debug:
+          msg: "Second message printed from the block"
+        always_run: true
+      when: x == true 
+      # The above conditional is at the block level and applies to all tasks in the block.
+  
+# Below we see the addtion of the rescue and always sections. This allows us to build
+# some error handling capabilities into our logic. Tasks in the block will execute.
+# Should a task in the block section fail, the tasks in the rescue section will be
+# executed. The idea being that we can try and remedy what went wrong in the preceding
+# block section. The always section will always run after the block or block & rescue
+# rescue section.  
+
+    - block:
+        - name: First block task
+          fail:
+          
+      rescue:
+        - name: First rescue task
+          debug:
+            msg: "Tasks in the rescue section only run when a task in the block fails"
+      
+      always:
+        - name: First always task
+          debug:
+            msg: "Tasks in the always section always run"
+  
+# Should tasks in the rescue section fail then you are still left in a
+# potentially broken state. Unless, you nested another block/rescue/always inside the 
+# rescue section. Yes, you can nest these things. I'd suggest not going to deep in these
+# nestings since then we start to think programmatically again where we should be thinking
+# declaritively.      

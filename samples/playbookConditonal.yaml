@@ -1,0 +1,40 @@
+---
+- name: Simple Boolean Task Demo
+  hosts: all
+  vars:
+    - yum_distros:
+        - RedHat 
+        - Fedora
+        - Centos
+    - apt_distros:
+        - Debian
+        - Ubuntu
+
+  tasks:
+    - name: httpd package is installed
+      yum:
+        name: httpd
+      when: ansible_facts['distribution'] in yum_distros
+
+# The conditional above is used to check if the value stored in the ansible fact is one of
+# the items listed in the yum_distros variable. Since the yum module wouldn't have much 
+# success running against a Debian based host. This is one approach to help make our 
+# playbooks more agnostic or friendly to hetergenous environments.
+
+    - name: "Print message"
+      debug:
+        msg: "{{ item }}"
+      loop:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+      when: item >= 3
+
+# Above we see a simple, if not useful, example of how the combination of loops
+# and conditionals can have either powerful or unintended consequences. It is important
+# to remember that the conditional will be evaluated each time the loop iterates. Which
+# could result in your loop skipping certain iterations in the right circumstances. In
+# the task above, only the items 3 through 5 will print out since the first two don't
+# meet the defined conditional.

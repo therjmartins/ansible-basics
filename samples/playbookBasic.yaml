@@ -1,0 +1,46 @@
+---
+# A playbook is a list of one or more plays, each of which will contain
+# at a minimum a list of hosts and tasks or roles that need to be executed.
+# More on roles later...
+
+# Below we can see, as we learned in the yamlBasics.yaml file, the dash-space combination
+# which denotes a new list item. In other words, the first play in the list of one or more
+# plays that make up a playbook.
+
+- name: Ensure a copy of a file exists on a host
+
+# Below, indented at the same level as the name of the play, are the hosts and tasks
+# directives. Each of these in turn storing the information about what tasks we want
+# executed and on which hosts. Tasks are generally always passed in as a list,
+# where as hosts will often be seen in either a list form or as single values passed 
+# to the hosts key/directive. I personally favour the list form and use it even when
+# only targeting a single host or group (like webservers, or even the special all group).
+
+  hosts: 
+    - webserver.example.com
+  tasks:
+    - name: Copy over index.html file
+      copy:
+        src: files/index.html
+        dest: /var/www/html/
+        owner: httpd
+        group: httpd
+        mode: 0644
+        state: present
+
+# Above we see the list of tasks in the play, in this case only a single task which
+# makes use of the copy module. Notice how the copy module key is indented at the same
+# level as the name of the task. Technically with both plays and tasks the name key is
+# not required. It is recommended since it makes auditing logs etc. far easier. But 
+# is not required. This concept often helps people understand the indentation of
+# modules and their parameters in tasks better. In the example above there are
+# several parameters being passed to the copy module. Take not of how the parameters to
+# the module are indented to show that they "belong" to the module. Should they be
+# indented one level up they would "belong" to the task and would usually cause an error.
+# Since Ansible wouldn't be expecting parameters to the task with those names.
+# These are by no means an exhaustive list but rather common parameters you might
+# find yourself using with this module. Each module has it's own set of parameters        
+# and you should make use of the respective module documentation to understand those
+# better. You can find a list of modules and their documentation at the URL below:
+# https://docs.ansible.com/ansible/latest/modules/modules_by_category.html
+

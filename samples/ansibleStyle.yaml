@@ -1,0 +1,91 @@
+---
+# Lets first start with what is now considered the obsolete key=value mapping 
+# The syntax that you have seen in adhoc commands used to also be how things were captured in playbooks. 
+# So you may have already seen older playbooks with tasks captured like this:
+
+- name: Print a message
+  debug: msg="This message is printed using the debug module"
+
+# This syntax brings a few gotchas along with it. First off, many modules have many possible parameters.
+# Which means that this format could see a very long line which would negatively impact readability.
+# It also brings the potential for version control conflicts depending on the task and implementation.
+
+# Capturing that same task with module parameters each on their own line is now the preferred standard for 
+# our playbooks. This solves for both of the problems mentioned above.
+
+- name: Print a message
+  debug:
+    msg: "This message is printed using the debug module"
+
+
+# The structures like dictionaries and arrays that we saw in the YAML basics sample can also be represented
+# in different ways. Which way you choose to represent the data will generally depend on your use case.
+# An array like the interfaces array below:
+
+- vars:
+    interfaces:
+      - GigabitEthernet1
+      - GigabitEthernet2
+      - GigabitEthernet3
+
+# Could also be represented like this:
+
+- vars:
+    interfaces: [ GigabitEthernet1, GigabitEthernet2, GigabitEthernet3 ]
+
+# Similarly, a dictionary like the if_conf dictionary shown below,
+
+#  ifConf:
+    name: GigabitEthernet1
+    ipv4: 192.168.10.12/24
+    state: up
+
+# could also be captured in long form like this:
+
+#  ifConf: { name: GigabitEthernet1, ipv4: 192.168.10.12/24, state: up }
+  
+
+# Now this does bring with it the same potential readability and version control conflict problems,
+# yet it also allows to simplify the capture of more complex structures like an array of dictionaries.
+# Typically in these scenarios the dictionaries contain data that is less likely to be modified
+# in such a way that version control conflicts occur:
+
+- vars:
+    interfaces:
+      - { name: GigabitEthernet1, ipv4: 192.168.10.12/24, state: up }
+      - { name: GigabitEthernet2, ipv4: 172.16.4.7/16, state: up }
+      - { name: GigabitEthernet3, ipv4: 15.142.8.216/30, state: up } 
+
+# A structure like the one seen above will prove useful when we start delving into flow control 
+# using things like loops
+
+# More advanced string structure:
+# In some scenarios there may be a need for very long strings that wrap over onto subsequent lines,
+# or cause your document to scroll of screen. Perhaps you have a need to capture a multi-line string
+# and need to keep that multi-line formatting in the final destination.
+
+  longString1: "This is a very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, very, long string"
+
+# longString1 could also be represented in a different way shown below which uses the > character
+# to let Ansible know that you will be passing in multiple lines and that you want it to fold
+# those lines into a single line string. See longString2 below:
+
+  longString2: >
+    "This is a very, very, very, very, very, 
+    very, very, very, very, very, very, 
+    very, very, very, very, very, long string"
+
+# As for maintaining multi-line formatting in your final destination, we use the vertical bar | or pipe
+# character. This lets Ansible know that we are going to pass in a multi-line string and that we want
+# to maintain that format when the string is used.
+
+  multiLineString: |
+    "1600 Pennsylvania Avenue NW
+    Washington
+    District Columbia
+    USA"
+
+
+
+  
+

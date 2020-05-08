@@ -1,0 +1,27 @@
+- name: Play that loops over a list of dictionaries
+  hosts:
+    - all
+  tasks:
+    - name: Ensure user(s) exist and belong to specific groups
+      user:
+        name: "{{ item.name }}"
+        state: present
+        groups: "{{ item.groups }}"
+      loop:
+        - name: jane
+          groups: wheel
+        - name: joe
+          groups: 
+            - root
+            - webadmin 
+            - auditors
+
+# In the sample above we can see that, in a use case like this where the parameter to the 
+# modules accepts a list as its value, we can still make use of a loop. In this case we
+# have multiple supplemental groups that we would like to add to one of the users that we 
+# are either creating or insuring the existence of. We are also using a loop over a list
+# of dictionaries in this example. This means that each time the loop iterates, we are
+# passing two pieces of information the user name and the groups they belong to.
+# This is stored in what becomes the item dictionary and we can traverse that information
+# using dot notations. I.e. item.name to retrieve the user name and item.groups to retrieve
+# the list of groups that the user belongs to.

@@ -1,0 +1,38 @@
+- name: Sample play that uses handlers
+  hosts:
+    - all
+  vars:
+    server_root: /etc/httpd
+  tasks:
+    - name: Change the port we listen on
+      lineinfile:
+        line: Listen 8080
+        regexp: '^Listen '
+        path: /etc/httpd/httpd.conf
+      notify: restart httpd
+      
+    - name: Change the server root directory
+      lineinfile:
+        line: "{{ server_root }}"
+        regexp: '^ServerRoot '
+        path: /etc/httpd/httpd.conf
+      notify: restart httpd
+
+  handlers:
+    - name: restart httpd
+      service:
+        name: httpd
+        state: restarted
+
+# Handlers are a powerful resource in Ansible. They allow us to easily have a task
+# , or tasks if we use include_tasks: with a handler, executed if a change was made
+# to a managed host during a play. By default, any handlers that are notified during 
+# play will execute once all tasks in the play have completed successfully. A handler
+# is notified by a task when that task has a notify directive specified on the task, as
+# seen in both tasks above. The notifying of a handler only happens if the task with a
+# notify directive makes a change to a managed host. Once all tasks have completed 
+# successfully the handlers will run in the order that they are listed, NOT the order 
+# that they were notified. Also take note that, the handlers directive is indented at 
+# a play level. The handlers section contains a list of handlers in the play, just 
+# like the tasks section contains the list of tasks in the play.
+      
