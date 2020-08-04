@@ -1,0 +1,27 @@
+---
+- name: This key gives the play a name # Here we see two functions, the first is the
+                                       # new list item that is the first play in this
+                                       # playbook, denoted by the "dash-space". The second
+                                       # is the name key which gives that first play a name.
+
+  hosts: webserver.example.com # This key is where we pass in a
+                               # host pattern or list of host patterns
+
+  tasks: # The tasks key contains a YAML list of tasks to be executed.
+         # Pay attention to that keyword - list.
+
+    - name: This key gives the task a name # Note the "dash-space" here denoting a new list item.
+      module: # Here we would create a YAML dictionary where the name of the module
+              # is used as the dictionary name e.g. copy, template, ios_config etc.
+        param1: val1
+        param2: val2
+        param3: val3
+        param4: val4
+        paramN: valN
+              # The values stored in the dictionary created are the parameters
+              # used to configure our usage of the module. We use this YAML
+              # structure for us to pass the serialized data to Ansible for execution.
+              # Ansible will, based on the structures created using YAML, be able to
+              # interpret what it is we want it to do. This is why understanding the
+              # structure is important and how simple indentation errors can have
+              # significant impact on the outcome of a playbook run.
