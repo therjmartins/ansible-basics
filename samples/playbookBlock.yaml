@@ -9,10 +9,6 @@
           debug:
             msg: "First block task"
 
-        - name: Fail task
-          fail:
-            msg: "This failed"
-            
       rescue:
         - name: Rescue Task 1
           debug:
