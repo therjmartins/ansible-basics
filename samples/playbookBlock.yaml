@@ -1,0 +1,26 @@
+---
+- name: Play 1
+  gather_facts: false
+  hosts:
+    - localhost
+  tasks:
+    - block:
+        - name: Block task 1
+          debug:
+            msg: "First block task"
+
+        - name: Fail task
+          fail:
+            msg: "This failed"
+            
+      rescue:
+        - name: Rescue Task 1
+          debug:
+            msg: "Message prints when tasks in the block fail"
+
+      always:
+        - name: Always task 1
+          debug:
+            msg: "This always prints"
+
+      when:  x is defined
