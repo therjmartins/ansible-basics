@@ -1,6 +1,7 @@
 ---
 - name: Simple Boolean Task Demo
-  hosts: all
+  hosts:
+    - all
   vars:
     - yum_distros:
         - RedHat 
