@@ -1,0 +1,65 @@
+---
+- name: Play to demonstrate simple usage of the jsonquery filter 
+  hosts:
+    - localhost
+  vars:
+    api: https://jsonplaceholder.typicode.com/posts
+    # The above content comes from the really useful JSON Placeholder site. 
+    # If you find it as useful as I do, please consider sponsoring typicode on github https://github.com/users/typicode/sponsorship
+    find_title: "json[?id==`{{ id }}`].title"
+    # The query above looks at the json element of the data passed in, finds a sub-element that contains an element called 'id' with a 
+    # value that is equal to the contents of an 'id' variable in the play/task, and returns the value stored in the 'title' element of
+    # the initial sub-element that matched.
+
+
+  tasks:
+  # This first task uses the uri module to grab the content we will later filter 
+  # and registers a variable called posts for us to use in subsequent tasks
+    - name: Grab the posts json object from the api
+      uri:
+        url: "{{ api }}"
+        method: GET
+        validate_certs: false
+        return_content: true
+      register: posts
+
+  # The next task will print out the contents of the json object that we grabbed in the previous task
+  # Just so that we can see the dataset that we are working with when we move on to the filter step.
+  # In the real world, we might add a verbosity directive to the use of the debug module below so that 
+  # we only print out the contents of the object whilst investigating by increasing the verbosity of the 
+  # playbook execution. I'm adding a verbosity directive to this task, setting it to 0 so that it always 
+  # executes, feel free to play with that some and see that useful feature in action.
+    - name: Print out the posts we grabbed from the api
+      debug:
+        msg: "{{ posts }}"
+        verbosity: 0
+
+  # Next we can use the json_query filter combined with a loop to print out all of the post titles listed 
+  # in the object that we got back from the api.
+    - name: Print out all of the title fields in the object returned
+      debug:
+        msg: "{{ item }}"
+      loop: "{{ posts | json_query('json[*].title') }}"
+  # The query used above looks at the 'json' element of the posts variable registered earlier. We then use the [*] to
+  # select all elements within that, and then append .title to grab just the contents of the title element inside 
+  # each of those. The json_query filter returns the data as a list, which makes it perfect for us to use in conjuction
+  # with a loop.
+  
+
+  # The last task in this play is going to use the json_query filter to grab the specific element that we want from the data 
+  # that we got back from the api earlier. In the previous task we had the query hardcoded into the task. In this task,
+  # since we might want to re-use the query for addtional tasks later in the play, the query is stored in a variable 
+  # declared in the vars section of the play and passed into the filter accordingly. I've also incorporated the use of another
+  # variable into the query, specifically a variable called "id". We then set the value of the "id" variable at the task level
+  # to illustrate further possibilities when re-using queries. Should you have many queries that you are using many times during
+  # your play, you may want to externalize these using a variable file and incorporate that into the play using the vars_files directive.
+    - name: Use the jsonquery filter to extract the specific piece of data we want from the returned object
+      debug:
+        msg: "The title of the post with the id {{ id }} is {{ posts | json_query(find_title) | first }}"
+      vars:
+        id: 42
+  # Note that with this query, since we are using info stored in the 'find_title' variable, we do not put the '' around the query since
+  # we are referring to a variable and rather than passing in a string as we were earlier. Also, as mentioned earlier, the json_query
+  # filter returns the data as a list. In this case, a list containing a single item. In order for that to be passed seamlessly into our 
+  # debug task to form part of the message printed out we have then passed that through the 'first' filter to grab the first item out of
+  # said list and return it as a string. 
