@@ -1,0 +1,13 @@
+
+---
+- name: Demo includes and imports
+  hosts:
+    - localhost
+  tasks:
+    - include_tasks: tasks/tasks1.yaml
+      
+    - import_tasks: tasks/tasks2.yaml
+  
+
+    
+  
