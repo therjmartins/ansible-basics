@@ -1,0 +1,17 @@
+- name: Play that loops over a list
+  hosts:
+    - localhost
+  vars:
+    loopstuff:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  tasks:
+    - name: "Print message"
+      debug:
+        msg: "{{ item }}"
+      loop: "{{ loopstuff }}"
+      when: item > 3
+
