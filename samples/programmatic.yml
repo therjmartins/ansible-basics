@@ -1,0 +1,22 @@
+- name: Play to deploy a MediaWiki backed service across many hosts
+  hosts:
+      - lamp
+  become: true
+  tasks:
+      - name: Install the httpd package
+        yum:
+          name: httpd
+          state: installed
+          when: '"lamp" in group_names'
+
+      - name: Install the mariadb-server package
+        yum:
+          name: mariadb-server
+          state: installed
+          when: '"lamp" in group_names'
+
+      - name: Install the php package
+        yum:
+          name: php
+          state: installed
+          when: '"lamp" in group_names'
